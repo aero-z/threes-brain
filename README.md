@@ -1,4 +1,4 @@
 threes-brain
 ============
 
-AI for the mobile game Threes! using neural networks
+AI for the mobile game [Threes!](http://asherv.com/threes/) using neural networks.
