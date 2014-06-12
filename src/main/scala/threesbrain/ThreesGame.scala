@@ -1,9 +1,10 @@
 package threesbrain
 
 import scala.util.Random
+import Move._
 
 object ThreesGame {
-    def newGame = {
+    def newGame() = {
         val freshStack = makeNewStack()
         val positions = Random.shuffle(List.range(0, 16)).take(9).map(i => (i % 4, i / 4))
         
@@ -21,13 +22,7 @@ object ThreesGame {
     }
 }
 
-object Move extends Enumeration {
-    type Move = Value
-    val Up, Down, Left, Right = Value
-}
-import Move._
-
-class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: List[Int]) {
+case class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: List[Int]) {
     // returns a possible next nextCard and the corresponding future stack
     private def drawNewCard(cells: List[List[Int]]) = {
         val max = cells.flatten.max
@@ -38,7 +33,7 @@ class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: List[
     }
     
     // make a move and place a new card
-    def move(move: Move): Option[ThreesGame] = {
+    def move(move: Move): ThreesGame = {
         def shiftLine(line: List[Int]): List[Int] = line match {
             case 0 :: cs => cs ::: List(0)
             case c1 :: c2 :: cs if (c1 + c2 == 3) => 3 :: cs ::: List(0)
@@ -61,10 +56,10 @@ class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: List[
             case Up => moveUp(cells)
             case Down => moveUp(cells.map(_.reverse)).map(_.reverse)
         }
-        if (newCells == cells) None
+        if (newCells == cells) this
         else {
             val (newNextCard, newStack) = drawNewCard(newCells)
-            Some(new ThreesGame(newCells, newNextCard, newStack))
+            ThreesGame(newCells, newNextCard, newStack)
         }
     }
 
