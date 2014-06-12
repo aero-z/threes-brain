@@ -1,4 +1,4 @@
-package threesbrain
+package threesbrain.game
 
 object Move extends Enumeration {
     type Move = Value

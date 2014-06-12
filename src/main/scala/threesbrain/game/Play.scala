@@ -1,6 +1,5 @@
-package threesbrain
+package threesbrain.game
 
-import scala.io.StdIn
 import scala.annotation.tailrec
 
 object Play {

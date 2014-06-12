@@ -1,6 +1,6 @@
-package threesbrain
+package threesbrain.consoleplay
 
-import scala.io.StdIn
+import threesbrain.game.Play
 
 object ConsolePlay extends App {
     val end = Play.play(ConsolePlayer)

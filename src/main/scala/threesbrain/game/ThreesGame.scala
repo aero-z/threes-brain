@@ -1,4 +1,4 @@
-package threesbrain
+package threesbrain.game
 
 import scala.util.Random
 import Move._
