@@ -26,7 +26,7 @@ case class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: 
     // returns a possible next nextCard and the corresponding future stack
     private def drawNewCard(cells: List[List[Int]]) = {
         val max = cells.flatten.max
-        if (max >= 7 && Random.nextFloat() < 1/21.0f) // if it's a bonus card
+        if (max >= 7 && Random.nextFloat() < 1/21.0f) // bonus card
             (Random.nextInt(max - 6) + 4, stack) // stack is not touched
         else // normal card
             (stack.head, if (stack.tail == Nil) ThreesGame.makeNewStack() else stack.tail) // draw from stack
