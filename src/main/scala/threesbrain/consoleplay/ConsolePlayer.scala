@@ -8,7 +8,7 @@ object ConsolePlayer extends ThreesPlayer {
 
     def decideMove(gameState: ThreesGame) = {
         println(gameState)
-        Iterator.continually(StdIn.readLine(prompt)).collectFirst(_ match {
+        Iterator.continually(StdIn.readLine(prompt)).collectFirst({
             case "l" => Move.Left
             case "r" => Move.Right
             case "u" => Move.Up
