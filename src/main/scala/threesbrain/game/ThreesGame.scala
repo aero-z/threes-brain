@@ -1,6 +1,7 @@
 package threesbrain.game
 
 import scala.util.Random
+import scala.math
 import Move._
 
 object ThreesGame {
@@ -62,6 +63,11 @@ case class ThreesGame(val cells: List[List[Int]], val nextCard: Int, val stack: 
             ThreesGame(newCells, newNextCard, newStack)
         }
     }
+
+    def score = cells.flatten.map(n =>
+        if (n < 3) 0
+        else math.pow(3, n-2).toInt
+    ).sum
 
     override lazy val toString = {
         def cardName(n: Int) = n match {
