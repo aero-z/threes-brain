@@ -14,6 +14,9 @@ class Neuron(val weights: List[Double]) {
     }
 }
 
+/**
+ * A layer of fully connected neurons
+ */
 class NeuronLayer(val neurons: List[Neuron]) {
     def evaluate(inputs: List[Double]) = neurons.map(_.evaluate(inputs))
 }
@@ -32,7 +35,7 @@ object NeuralNetwork {
         assert(layerSizes.length >= 2)
         val ioSizes = layerSizes.dropRight(1).zip(layerSizes.tail)
         val layers = ioSizes.map({case (nInputs, nOutputs) =>
-            new NeuronLayer(List.fill(nOutputs)(new Neuron(List.fill(nInputs + 1)(Random.nextDouble()))))
+            new NeuronLayer(List.fill(nOutputs)(new Neuron(List.fill(nInputs + 1)(Random.nextDouble() * 2.0 - 1.0))))
         })
         new NeuralNetwork(layers)
     }
