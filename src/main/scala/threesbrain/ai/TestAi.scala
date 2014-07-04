@@ -1,7 +1,7 @@
 package threesbrain.ai
 
 import scala.math
-import threesbrain.game.Play
+import threesbrain.game._
 import threesbrain.ai.neuralnetwork.NeuralNetworkPlayer
 
 object TestAi extends App {
@@ -12,13 +12,13 @@ object TestAi extends App {
     }
 
     val nTests = 20
-    val playersToTest = List(
-        ("Random Moves", RandomPlayer),
-        ("Random Neural Network", NeuralNetworkPlayer.makeRandom())
+    val playersToTest: List[(String, () => ThreesPlayer)] = List(
+        ("Random Moves", () => RandomPlayer),
+        ("Random Neural Network", NeuralNetworkPlayer.makeRandom)
     )
-    for ((name, player) <- playersToTest) {
+    for ((name, getPlayer) <- playersToTest) {
         println("\nPlayer: " + name)
-        val scores = List.fill(nTests)(Play.play(player, allowInvalidMove=false).score)
+        val scores = List.fill(nTests)(Play.play(getPlayer(), allowInvalidMove=false).score)
         println("Score mean: " + mean(scores))
         println("Score std dev: " + stdDev(scores))
     }
