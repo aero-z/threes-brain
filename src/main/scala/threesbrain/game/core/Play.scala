@@ -1,4 +1,4 @@
-package threesbrain.game
+package threesbrain.game.core
 
 import scala.annotation.tailrec
 

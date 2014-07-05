@@ -1,8 +1,7 @@
-package threesbrain.ai
+package threesbrain.game.ai
 
 import scala.math
-import threesbrain.game._
-import threesbrain.ai.neuralnetwork.NeuralNetworkPlayer
+import threesbrain.game.core._
 
 object TestAi extends App {
     def mean(xs: List[Int]) = xs.sum.toDouble / xs.length
@@ -12,14 +11,18 @@ object TestAi extends App {
     }
 
     val nTests = 20
+    val trainedNNPlayer = NeuralNetworkPlayer.train()
+
     val playersToTest: List[(String, () => ThreesPlayer)] = List(
         ("Random Moves", () => RandomPlayer),
-        ("Random Neural Network", NeuralNetworkPlayer.makeRandom)
+        ("Random Neural Network", NeuralNetworkPlayer.makeRandom),
+        ("Genetically Trained Neural Network", () => trainedNNPlayer)
     )
     for ((name, getPlayer) <- playersToTest) {
-        println("\nPlayer: " + name)
+        println("Player: " + name)
         val scores = List.fill(nTests)(Play.play(getPlayer(), allowInvalidMove=false).score)
         println("Score mean: " + mean(scores))
         println("Score std dev: " + stdDev(scores))
+        println()
     }
 }

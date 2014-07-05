@@ -1,14 +1,23 @@
-package threesbrain.ai.neuralnetwork
+package threesbrain.game.ai
 
-import threesbrain.game._
+import threesbrain.game.core._
+import threesbrain.neuralnetwork._
 import Move._
 
 object NeuralNetworkPlayer {
     val numInputs = 16 + 1 + 12 // cells + next card + stack
     val numOutputs = 1
     
-    def makeRandom() = 
+    def makeRandom() = // creates a random neural network player with 2 layers
         new NeuralNetworkPlayer(NeuralNetwork.makeRandom(List(numInputs, numOutputs)))
+
+    val numGenerations = 50
+    val populationSize = 50
+    val numLayers = 3
+    def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
+
+    def train() =
+        new NeuralNetworkPlayer(GeneticAlgorithm.train(numGenerations, populationSize, scoreFun, numInputs, numOutputs, 3))
 }
 
 class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {

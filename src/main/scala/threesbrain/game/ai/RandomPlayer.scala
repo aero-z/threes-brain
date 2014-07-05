@@ -1,7 +1,7 @@
-package threesbrain.ai
+package threesbrain.game.ai
 
 import scala.util.Random
-import threesbrain.game._
+import threesbrain.game.core._
 
 object RandomPlayer extends ThreesPlayer {
     def decideMove(gameState: ThreesGame) = {

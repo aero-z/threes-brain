@@ -1,4 +1,4 @@
-package threesbrain.ai.neuralnetwork
+package threesbrain.neuralnetwork
 
 import scala.util.Random
 

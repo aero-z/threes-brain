@@ -1,7 +1,7 @@
-package threesbrain.consoleplay
+package threesbrain.game.consoleplay
 
 import scala.io.StdIn
-import threesbrain.game._
+import threesbrain.game.core._
 
 object ConsolePlayer extends ThreesPlayer {
     val prompt = "Enter your move (l/r/u/d): "
