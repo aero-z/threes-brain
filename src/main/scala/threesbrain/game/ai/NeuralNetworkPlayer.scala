@@ -11,13 +11,11 @@ object NeuralNetworkPlayer {
     def makeRandom() = // creates a random neural network player with 2 layers
         new NeuralNetworkPlayer(NeuralNetwork.makeRandom(List(numInputs, numOutputs)))
 
-    val numGenerations = 50
-    val populationSize = 50
     val numLayers = 3
     def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
 
     def train() =
-        new NeuralNetworkPlayer(GeneticAlgorithm.train(numGenerations, populationSize, scoreFun, numInputs, numOutputs, 3))
+        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 20, numOutputs)))
 }
 
 class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {

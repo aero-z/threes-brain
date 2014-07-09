@@ -31,11 +31,30 @@ class NeuralNetwork(val layers: List[NeuronLayer]) {
 }
 
 object NeuralNetwork {
+    def weightLengths(layerSizes: List[Int]) =
+        layerSizes.dropRight(1).zip(layerSizes.tail).map({case (i, o) => (i + 1) * o})
+
     def makeRandom(layerSizes: List[Int]) = {
+        val numWeights = weightLengths(layerSizes).sum
+        val weights = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
+        fromWeights(layerSizes, weights)
+    }
+
+    private def split[T](list: List[T], sizes: List[Int]): List[List[T]] = sizes match {
+        case Nil => Nil
+        case _ => list.splitAt(sizes.head) match {
+            case (a, b) => a :: split(b, sizes.tail)
+        }
+    }
+
+    def fromWeights(layerSizes: List[Int], weights: List[Double]) = {
         assert(layerSizes.length >= 2)
-        val ioSizes = layerSizes.dropRight(1).zip(layerSizes.tail)
-        val layers = ioSizes.map({case (nInputs, nOutputs) =>
-            new NeuronLayer(List.fill(nOutputs)(new Neuron(List.fill(nInputs + 1)(Random.nextDouble() * 2.0 - 1.0))))
+
+        val layerWeights = split(weights, weightLengths(layerSizes))
+
+        assert(layerWeights.length == layerSizes.length - 1)
+        val layers = layerWeights.zip(layerSizes.dropRight(1)).map({case (weights, nInputs) =>
+            new NeuronLayer(weights.grouped(nInputs + 1).map(new Neuron(_)).toList)
         })
         new NeuralNetwork(layers)
     }
