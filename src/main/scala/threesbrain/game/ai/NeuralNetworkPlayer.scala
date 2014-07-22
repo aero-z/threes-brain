@@ -14,7 +14,7 @@ object NeuralNetworkPlayer {
     def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
 
     def train() =
-        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, numOutputs)))
+        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 16, 8, numOutputs)))
 }
 
 class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {

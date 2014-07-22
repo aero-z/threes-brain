@@ -5,6 +5,6 @@ import threesbrain.game.core._
 
 object RandomPlayer extends ThreesPlayer {
     def decideMove(gameState: ThreesGame) = {
-        Move.values.toList(Random.nextInt(Move.values.size))
+        gameState.validMoves.toList(Random.nextInt(gameState.validMoves.size))
     }
 }

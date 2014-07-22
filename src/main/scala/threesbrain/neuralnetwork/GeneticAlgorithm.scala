@@ -2,6 +2,7 @@ package threesbrain.neuralnetwork
 
 import scala.annotation.tailrec
 import scala.util.Random
+import scala.collection.GenSeq
 
 object GeneticAlgorithm {
     val mutationRate = 0.1
@@ -9,7 +10,7 @@ object GeneticAlgorithm {
     val crossOverRate = 0.7
     val eliteProportion = 0.1
     val populationSize = 100
-    val numGenerations = 1000
+    val numGenerations = 50
 
     type Genome = List[Double]
 
@@ -18,7 +19,7 @@ object GeneticAlgorithm {
         assert(populationSize > 0)
 
         def nextGeneration(population: List[Genome]): List[Genome] = {
-            val scores = population.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
+            val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
 
             // Mutate single weights according to mutation rate
             def mutate(genome: Genome) = genome.map({ w =>
@@ -43,7 +44,7 @@ object GeneticAlgorithm {
 
             // Roulette-wheel selection
             def pickParent() = {
-                def pick(pop: List[Genome], scores: List[Double], num: Double): Genome = {
+                def pick(pop: List[Genome], scores: GenSeq[Double], num: Double): Genome = {
                     if (num < scores.head) pop.head
                     else pick(pop.tail, scores.tail, num - scores.head)
                 }

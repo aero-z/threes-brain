@@ -69,8 +69,8 @@ case class ThreesGame(cells: List[List[Int]], nextCard: Int, stack: List[Int]) {
         else math.pow(3, n-2).toInt
     ).sum
     
-    val cardsInStack = (1 to 3).map(n => stack.count(_ == n)).toList
-    
+    def cardsInStack = (1 to 3).map(n => stack.count(_ == n)).toList
+
     def validMoves = Move.values.filter(m => move(m) != this)
 
     override def toString = {
