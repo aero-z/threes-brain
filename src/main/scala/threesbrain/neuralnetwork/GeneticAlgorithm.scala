@@ -17,9 +17,6 @@ object GeneticAlgorithm {
               layerSizes: List[Int]): NeuralNetwork = {
         assert(populationSize > 0)
 
-        val numWeights = NeuralNetwork.weightLengths(layerSizes).sum
-        def randomGenome() = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
-
         def nextGeneration(population: List[Genome]): List[Genome] = {
             val scores = population.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
 
@@ -68,6 +65,8 @@ object GeneticAlgorithm {
                 trainRec(nextGeneration(population), n - 1)
         }
 
+        val numWeights = NeuralNetwork.weightLengths(layerSizes).sum
+        def randomGenome() = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
         val startPopulation = List.fill(populationSize)(randomGenome())
 
         NeuralNetwork.fromWeights(layerSizes, trainRec(startPopulation, numGenerations)(0))

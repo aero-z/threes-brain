@@ -5,7 +5,7 @@ import threesbrain.neuralnetwork._
 import Move._
 
 object NeuralNetworkPlayer {
-    val numInputs = 16 + 1 + 12 // cells + next card + stack
+    val numInputs = 16 + 1 + 3 // cells + next card + stack
     val numOutputs = 1
     
     def makeRandom() = // creates a random neural network player with 2 layers
@@ -23,11 +23,9 @@ class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {
     assert(neuralNetwork.layers.last.neurons.length == NeuralNetworkPlayer.numOutputs)
     
     def gameStateToNetworkInput(gameState: ThreesGame): List[Double] = {
-        def cardActivation(x: Int) = x.toDouble
-        
-        gameState.cells.flatten.map(cardActivation) :::
-        cardActivation(gameState.nextCard) ::
-        gameState.stack.padTo(12, 0).map(cardActivation)
+        gameState.cells.flatten.map(_.toDouble) :::
+        gameState.nextCard.toDouble ::
+        gameState.cardsInStack.map(_.toDouble)
     }
     def networkOutputToMove(outputs: List[Double]): Move = {
         Move.values.toList(Math.min(0, (outputs(0) * 4).toInt))
