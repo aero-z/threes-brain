@@ -23,7 +23,7 @@ object ThreesGame {
     }
 }
 
-class ThreesGame(val cells: List[List[Int]], val nextCard: Int, stack: List[Int]) {
+case class ThreesGame(cells: List[List[Int]], nextCard: Int, stack: List[Int]) {
     // returns a possible next nextCard and the corresponding future stack
     private def drawNewCard(cells: List[List[Int]]) = {
         val max = cells.flatten.max
@@ -60,7 +60,7 @@ class ThreesGame(val cells: List[List[Int]], val nextCard: Int, stack: List[Int]
         if (newCells == cells) this
         else {
             val (newNextCard, newStack) = drawNewCard(newCells)
-            new ThreesGame(newCells, newNextCard, newStack)
+            ThreesGame(newCells, newNextCard, newStack)
         }
     }
 
@@ -70,6 +70,8 @@ class ThreesGame(val cells: List[List[Int]], val nextCard: Int, stack: List[Int]
     ).sum
     
     val cardsInStack = (1 to 3).map(n => stack.count(_ == n)).toList
+    
+    def validMoves = Move.values.filter(m => move(m) != this)
 
     override def toString = {
         def cardName(n: Int) = n match {

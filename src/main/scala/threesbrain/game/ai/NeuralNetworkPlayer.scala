@@ -6,16 +6,15 @@ import Move._
 
 object NeuralNetworkPlayer {
     val numInputs = 16 + 1 + 3 // cells + next card + stack
-    val numOutputs = 1
+    val numOutputs = 4
     
     def makeRandom() = // creates a random neural network player with 2 layers
         new NeuralNetworkPlayer(NeuralNetwork.makeRandom(List(numInputs, numOutputs)))
 
-    val numLayers = 3
     def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
 
     def train() =
-        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 16, numOutputs)))
+        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, numOutputs)))
 }
 
 class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {
@@ -27,13 +26,13 @@ class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {
         gameState.nextCard.toDouble ::
         gameState.cardsInStack.map(_.toDouble)
     }
-    def networkOutputToMove(outputs: List[Double]): Move = {
-        Move.values.toList(Math.min(0, (outputs(0) * 4).toInt))
+    def networkOutputToMove(outputs: List[Double], gameState: ThreesGame): Move = {
+        gameState.validMoves.maxBy(m => outputs(m.id))
     }
         
     def decideMove(gameState: ThreesGame): Move = {
         val inputs = gameStateToNetworkInput(gameState)
         val outputs = neuralNetwork.evaluate(inputs)
-        networkOutputToMove(outputs)
+        networkOutputToMove(outputs, gameState)
     }
 }

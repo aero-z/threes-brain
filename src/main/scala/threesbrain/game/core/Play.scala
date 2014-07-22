@@ -5,7 +5,7 @@ import scala.annotation.tailrec
 object Play {
     @tailrec
     def play(player: ThreesPlayer, gameState: ThreesGame = ThreesGame.newGame(), allowInvalidMove: Boolean = true): ThreesGame = {
-        val isGameOver = !Move.values.map(gameState.move(_)).exists(_ != gameState)
+        val isGameOver = gameState.validMoves.isEmpty
         if (isGameOver) {
             gameState
         } else {
