@@ -69,6 +69,9 @@ object GeneticAlgorithm {
         def randomGenome() = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
         val startPopulation = List.fill(populationSize)(randomGenome())
 
-        NeuralNetwork.fromWeights(layerSizes, trainRec(startPopulation, numGenerations)(0))
+        val weights = trainRec(startPopulation, numGenerations).maxBy(
+            genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome))
+        )
+        NeuralNetwork.fromWeights(layerSizes, weights)
     }
 }
