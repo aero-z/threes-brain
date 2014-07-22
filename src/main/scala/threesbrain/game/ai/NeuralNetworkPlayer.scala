@@ -15,7 +15,7 @@ object NeuralNetworkPlayer {
     def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
 
     def train() =
-        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 20, numOutputs)))
+        new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 16, numOutputs)))
 }
 
 class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {
@@ -30,7 +30,7 @@ class NeuralNetworkPlayer(neuralNetwork: NeuralNetwork) extends ThreesPlayer {
         gameState.stack.padTo(12, 0).map(cardActivation)
     }
     def networkOutputToMove(outputs: List[Double]): Move = {
-        Move.values.toList((outputs(0) * 4).toInt)
+        Move.values.toList(Math.min(0, (outputs(0) * 4).toInt))
     }
         
     def decideMove(gameState: ThreesGame): Move = {

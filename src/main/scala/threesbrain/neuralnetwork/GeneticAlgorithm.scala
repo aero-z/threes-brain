@@ -9,7 +9,7 @@ object GeneticAlgorithm {
     val crossOverRate = 0.7
     val eliteProportion = 0.1
     val populationSize = 100
-    val numGenerations = 100
+    val numGenerations = 1000
 
     type Genome = List[Double]
 
@@ -63,7 +63,9 @@ object GeneticAlgorithm {
         @tailrec
         def trainRec(population: List[Genome], cyclesLeft: Int): List[Genome] = cyclesLeft match {
             case 0 => population
-            case n => trainRec(nextGeneration(population), n - 1)
+            case n =>
+                println(n + " generations left")
+                trainRec(nextGeneration(population), n - 1)
         }
 
         val startPopulation = List.fill(populationSize)(randomGenome())
