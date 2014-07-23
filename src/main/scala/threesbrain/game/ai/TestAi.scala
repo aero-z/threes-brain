@@ -10,7 +10,7 @@ object TestAi extends App {
         math.sqrt(xs.foldLeft(0.0)((x,y) => x + math.pow(m - y, 2)) / xs.length)
     }
 
-    val nTests = 20
+    val nTests = 500
     val trainedNNPlayer = NeuralNetworkPlayer.train()
 
     val playersToTest: List[(String, () => ThreesPlayer)] = List(
