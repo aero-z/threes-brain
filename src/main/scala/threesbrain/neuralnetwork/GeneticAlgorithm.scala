@@ -3,24 +3,32 @@ package threesbrain.neuralnetwork
 import scala.annotation.tailrec
 import scala.util.Random
 import scala.collection.GenSeq
+import java.io.FileWriter
 
 object GeneticAlgorithm {
     val mutationRate = 0.1
     val maxMutationPerturbation = 0.3
     val crossOverRate = 0.7
     val eliteProportion = 0.1
-    val populationSize = 100
-    val numGenerations = 50
-
+    val populationSize = 200
+    val numGenerations = 200
+    
     type Genome = List[Double]
 
     def train(scoreFun: (NeuralNetwork) => Double,
               layerSizes: List[Int]): NeuralNetwork = {
         assert(populationSize > 0)
+        
+        val fileName = s"threesbrain-log-${System.currentTimeMillis()/1000}.csv"
+        val log = new FileWriter(fileName)
+        log.write("Round,PopBestAvg,PopWorstAvg,PopAvg\n")
 
         def nextGeneration(population: List[Genome]): List[Genome] = {
             val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
-            println(f"\tbest=${scores.max}%.2f,\tworst=${scores.min}%.2f,\taverage=${scores.sum/scores.length}%.2f")
+            val (max, min, avg) = (scores.max, scores.min, scores.sum/scores.length)
+            log.write(s"$max,$min,$avg\n")
+            log.flush
+            println(f"\tbest=$max%.2f,\tworst=$min%.2f,\taverage=$avg%.2f")
 
             // Mutate single weights according to mutation rate
             def mutate(genome: Genome) = genome.map({ w =>
@@ -64,6 +72,7 @@ object GeneticAlgorithm {
             case 0 => population
             case n =>
                 print(f"${numGenerations - n + 1}%6d/$numGenerations%d: ")
+                log.write(numGenerations - n + 1+",")
                 trainRec(nextGeneration(population), n - 1)
         }
 
@@ -74,6 +83,7 @@ object GeneticAlgorithm {
         val weights = trainRec(startPopulation, numGenerations).maxBy(
             genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome))
         )
+        log.close
         NeuralNetwork.fromWeights(layerSizes, weights)
     }
 }
