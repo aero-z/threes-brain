@@ -20,6 +20,7 @@ object GeneticAlgorithm {
 
         def nextGeneration(population: List[Genome]): List[Genome] = {
             val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
+            println(f"\tbest=${scores.max}%.2f,\tworst=${scores.min}%.2f,\taverage=${scores.sum/scores.length}%.2f")
 
             // Mutate single weights according to mutation rate
             def mutate(genome: Genome) = genome.map({ w =>
@@ -62,7 +63,7 @@ object GeneticAlgorithm {
         def trainRec(population: List[Genome], cyclesLeft: Int): List[Genome] = cyclesLeft match {
             case 0 => population
             case n =>
-                println(n + " generations left")
+                print(f"${numGenerations - n + 1}%6d/$numGenerations%d: ")
                 trainRec(nextGeneration(population), n - 1)
         }
 

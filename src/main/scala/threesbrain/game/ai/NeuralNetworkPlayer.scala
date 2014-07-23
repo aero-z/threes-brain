@@ -11,7 +11,11 @@ object NeuralNetworkPlayer {
     def makeRandom() = // creates a random neural network player with 2 layers
         new NeuralNetworkPlayer(NeuralNetwork.makeRandom(List(numInputs, numOutputs)))
 
-    def scoreFun(nn: NeuralNetwork) = Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score
+    val nTrials = 10
+    def scoreFun(nn: NeuralNetwork) = {
+        val scores = List.fill(nTrials)(Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score)
+        scores.sum.toDouble / scores.length
+    }
 
     def train() =
         new NeuralNetworkPlayer(GeneticAlgorithm.train(scoreFun, List(numInputs, 16, 8, numOutputs)))
