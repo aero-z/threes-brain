@@ -1,7 +1,7 @@
 threes-brain
 ============
 
-AI for the mobile game [Threes!](http://asherv.com/threes/) using neural networks and a genetic algorithm.
+Experimental AI for the mobile game [Threes!](http://asherv.com/threes/) using neural networks and a genetic algorithm.
 
 ## Neural network ##
 
@@ -13,4 +13,4 @@ AI for the mobile game [Threes!](http://asherv.com/threes/) using neural network
 
 ## Statistics ##
 
-TODO: add performance statistics of this AI
+Performance statistics comming soon.
