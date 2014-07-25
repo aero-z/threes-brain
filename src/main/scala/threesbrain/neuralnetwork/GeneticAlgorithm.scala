@@ -10,14 +10,16 @@ object GeneticAlgorithm {
     val maxMutationPerturbation = 0.3
     val crossOverRate = 0.7
     val eliteProportion = 0.1
-    val populationSize = 200
-    val numGenerations = 200
+    val populationSize = 1000
+    val numGenerations = 300
     
     type Genome = List[Double]
 
     def train(scoreFun: (NeuralNetwork) => Double,
               layerSizes: List[Int]): NeuralNetwork = {
         assert(populationSize > 0)
+
+        val numWeights = NeuralNetwork.weightLengths(layerSizes).sum
         
         val fileName = s"threesbrain-log-${System.currentTimeMillis()/1000}.csv"
         val log = new FileWriter(fileName)
@@ -46,6 +48,14 @@ object GeneticAlgorithm {
                         mom.take(crossoverPoint) ::: dad.drop(crossoverPoint),
                         dad.take(crossoverPoint) ::: mom.drop(crossoverPoint)
                     )
+                    /* Comment out the following for uniform crossover
+                    val flips = List.fill(numWeights)(Random.nextBoolean())
+                    val momDadFlips = mom.zip(dad).zip(flips)
+                    List(
+                        momDadFlips.map{case ((m, d), flip) => if (flip) m else d},
+                        momDadFlips.map{case ((m, d), flip) => if (flip) d else m}
+                    )
+                    */
                 }
                 else
                     List(mom, dad)
@@ -76,7 +86,6 @@ object GeneticAlgorithm {
                 trainRec(nextGeneration(population), n - 1)
         }
 
-        val numWeights = NeuralNetwork.weightLengths(layerSizes).sum
         def randomGenome() = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
         val startPopulation = List.fill(populationSize)(randomGenome())
 

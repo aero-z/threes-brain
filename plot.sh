@@ -3,5 +3,5 @@ if [ -z "$1" ]; then
     exit
 fi
 
-filename=$1
-gnuplot -e "filename='$filename'" evolution.gnuplot
+filenames="$@"
+gnuplot -e "filenames='$filenames'" evolution.gnuplot

@@ -6,6 +6,7 @@ import scala.util.Random
  * Neuron with assigned weights (first weight is for the bias)
  */
 class Neuron(val weights: List[Double]) {
+    // TODO: try other activation func
     def logisticFunc(x: Double) = 1.0 / (1.0 + Math.exp(-x))
         
     def evaluate(inputs: List[Double]): Double = {

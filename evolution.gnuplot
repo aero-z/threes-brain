@@ -1,3 +1,5 @@
 set datafile separator ","
-plot filename every ::1 using 1:4 with line title 'Average score'
+#set terminal png
+#set output 'plot.png'
+plot for [filename in filenames] filename every ::1 using 1:4 with line title filename
 pause -1
