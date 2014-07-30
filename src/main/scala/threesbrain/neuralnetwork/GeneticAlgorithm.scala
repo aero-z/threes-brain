@@ -25,14 +25,15 @@ object GeneticAlgorithm {
         
         val fileName = s"threesbrain-log-${System.currentTimeMillis()/1000}.csv"
         val log = new FileWriter(fileName)
-        log.write("Round,PopBestAvg,PopWorstAvg,PopAvg\n")
+        log.write("Epoch,PopBestAvg,PopWorstAvg,PopAvg\n")
+        println("Epoch        Best       Worst    Average")
 
         def nextGeneration(population: List[Genome]): List[Genome] = {
             val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
             val (max, min, avg) = (scores.max, scores.min, scores.sum/scores.length)
             log.write(s"$max,$min,$avg\n")
             log.flush
-            println(f"\tbest=$max%.2f,\tworst=$min%.2f,\taverage=$avg%.2f")
+            println(f"$max%10.2f,$min%10.2f,$avg%10.2f")
 
             // Mutate single weights according to mutation rate
             def mutate(genome: Genome) = genome.map({ w =>
@@ -83,7 +84,7 @@ object GeneticAlgorithm {
         def trainRec(population: List[Genome], cyclesLeft: Int): List[Genome] = cyclesLeft match {
             case 0 => population
             case n =>
-                print(f"${numGenerations - n + 1}%6d/$numGenerations%d: ")
+                print(s"${numGenerations - n + 1}/$numGenerations".padTo(8, ' '))
                 log.write(numGenerations - n + 1+",")
                 trainRec(nextGeneration(population), n - 1)
         }
@@ -97,8 +98,12 @@ object GeneticAlgorithm {
         log.close
 
         val timeEnd = System.nanoTime()
+        val timeDelta = timeEnd - timeStart
         
-        println("Time to train network: " + NANOSECONDS.toMinutes(timeEnd - timeStart) + " min")
+        println("Total training time: " +
+                NANOSECONDS.toHours(timeDelta) + "h " + 
+                NANOSECONDS.toMinutes(timeDelta) % 60 + "m " + 
+                NANOSECONDS.toSeconds(timeDelta) % 60 + "s")
 
         NeuralNetwork.fromWeights(layerSizes, weights)
     }
