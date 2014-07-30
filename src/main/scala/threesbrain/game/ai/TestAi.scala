@@ -19,12 +19,12 @@ object TestAi extends App {
         ("Genetically Trained Neural Network", () => trainedNNPlayer)
     )
     for ((name, getPlayer) <- playersToTest) {
+        println()
         println("Player: " + name)
         val scores = List.fill(nTests)(Play.play(getPlayer(), allowInvalidMove=false).score)
         println("Score max: " + scores.max)
         println("Score min: " + scores.min)
         println("Score mean: " + mean(scores))
         println("Score std dev: " + stdDev(scores))
-        println()
     }
 }

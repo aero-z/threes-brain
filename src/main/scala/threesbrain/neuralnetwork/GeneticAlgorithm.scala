@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 import scala.util.Random
 import scala.collection.GenSeq
 import java.io.FileWriter
+import java.util.concurrent.TimeUnit.NANOSECONDS
 
 object GeneticAlgorithm {
     val mutationRate = 0.1
@@ -19,6 +20,7 @@ object GeneticAlgorithm {
               layerSizes: List[Int]): NeuralNetwork = {
         assert(populationSize > 0)
 
+        val timeStart = System.nanoTime()
         val numWeights = NeuralNetwork.weightLengths(layerSizes).sum
         
         val fileName = s"threesbrain-log-${System.currentTimeMillis()/1000}.csv"
@@ -93,6 +95,11 @@ object GeneticAlgorithm {
             genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome))
         )
         log.close
+
+        val timeEnd = System.nanoTime()
+        
+        println("Time to train network: " + NANOSECONDS.toMinutes(timeEnd - timeStart) + " min")
+
         NeuralNetwork.fromWeights(layerSizes, weights)
     }
 }
