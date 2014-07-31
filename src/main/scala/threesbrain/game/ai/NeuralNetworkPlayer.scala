@@ -11,7 +11,7 @@ object NeuralNetworkPlayer {
     def makeRandom() = // creates a random neural network player with 2 layers
         new NeuralNetworkPlayer(NeuralNetwork.makeRandom(List(numInputs, numOutputs)))
 
-    val nTrials = 10
+    val nTrials = 1
     def scoreFun(nn: NeuralNetwork) = {
         val scores = List.fill(nTrials)(Play.play(new NeuralNetworkPlayer(nn), allowInvalidMove=false).score)
         scores.sum.toDouble / scores.length

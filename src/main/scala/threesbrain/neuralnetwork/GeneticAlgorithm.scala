@@ -28,7 +28,7 @@ object GeneticAlgorithm {
         log.write("Epoch,PopBestAvg,PopWorstAvg,PopAvg\n")
         println("Epoch        Best       Worst    Average")
 
-        def nextGeneration(population: List[Genome]): List[Genome] = {
+        def epoch(population: List[Genome]): List[Genome] = {
             val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
             val (max, min, avg) = (scores.max, scores.min, scores.sum/scores.length)
             log.write(s"$max,$min,$avg\n")
@@ -45,23 +45,43 @@ object GeneticAlgorithm {
 
             // Create two children and cross over their genomes if the cross-over random variable is active
             def crossover(mom: Genome, dad: Genome) = {
-                if (Random.nextDouble() < crossOverRate) {
-                    val crossoverPoint = Random.nextInt(mom.length)
+                def onePoint() = {
+                    val crossoverPoint = Random.nextInt(mom.length - 2) + 1
                     List(
                         mom.take(crossoverPoint) ::: dad.drop(crossoverPoint),
                         dad.take(crossoverPoint) ::: mom.drop(crossoverPoint)
                     )
-                    /* Comment out the following for uniform crossover
-                    val flips = List.fill(numWeights)(Random.nextBoolean())
+                }
+                def twoPoint() = {
+                    val p1 = Random.nextInt(mom.length - 2) + 1
+                    val p2 = (Random.nextInt(mom.length - 3) + 1) match {
+                        case p if p >= p1 => p + 1
+                        case p => p
+                    }
+                    val crossoverPoint1 = Math.min(p1, p2)
+                    val crossoverPoint2 = Math.max(p1, p2)
+                    List(
+                        mom.take(crossoverPoint1) ::: dad.drop(crossoverPoint1).take(crossoverPoint2 - crossoverPoint1) ::: mom.drop(crossoverPoint2),
+                        dad.take(crossoverPoint1) ::: mom.drop(crossoverPoint1).take(crossoverPoint2 - crossoverPoint1) ::: dad.drop(crossoverPoint2)
+                    )
+                }
+                def uniform() = {
+                    val flips = List.fill(numWeights)(Random.nextDouble() > 0.7)
                     val momDadFlips = mom.zip(dad).zip(flips)
                     List(
                         momDadFlips.map{case ((m, d), flip) => if (flip) m else d},
                         momDadFlips.map{case ((m, d), flip) => if (flip) d else m}
                     )
-                    */
                 }
-                else
+                def identity() = {
                     List(mom, dad)
+                }
+                val crossoverFunc = identity _  // it seems that having no crossover is more efficient
+                
+                if (Random.nextDouble() < crossOverRate)
+                    crossoverFunc()
+                else
+                    identity()
             }
 
             // Roulette-wheel selection
@@ -86,7 +106,7 @@ object GeneticAlgorithm {
             case n =>
                 print(s"${numGenerations - n + 1}/$numGenerations".padTo(8, ' '))
                 log.write(numGenerations - n + 1+",")
-                trainRec(nextGeneration(population), n - 1)
+                trainRec(epoch(population), n - 1)
         }
 
         def randomGenome() = List.fill(numWeights)(Random.nextDouble() * 2.0 - 1.0)
