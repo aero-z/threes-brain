@@ -29,7 +29,7 @@ object GeneticAlgorithm {
         println("Epoch        Best       Worst    Average")
 
         def epoch(population: List[Genome]): List[Genome] = {
-            val scores = population.par.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
+            val scores = population.map(genome => scoreFun(NeuralNetwork.fromWeights(layerSizes, genome)))
             val (max, min, avg) = (scores.max, scores.min, scores.sum/scores.length)
             log.write(s"$max,$min,$avg\n")
             log.flush
